@@ -43,6 +43,12 @@ public class OrderController {
         return ResponseEntity.ok(orders);
     }
 
+    @PostMapping("/basket/{basketId}")
+    public ResponseEntity<OrderDTO> placeOrderFromBasket(@PathVariable Long basketId) {
+        OrderDTO orderDTO = orderService.placeOrderFromBasket(basketId);
+        return ResponseEntity.ok(orderDTO);
+    }
+
     @PutMapping("/{orderId}/status")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<OrderDTO> updateOrderStatus(@PathVariable Long orderId,

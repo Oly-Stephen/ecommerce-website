@@ -20,4 +20,10 @@ public class OrderItem {
     private Product product;
     private Integer quantity;
     private BigDecimal price;
+
+    public OrderItem(Order order, Product product, Integer quantity) {
+        this.order = order;
+        this.product = product;
+        this.quantity = quantity;
+    }
 }

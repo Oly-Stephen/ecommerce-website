@@ -7,6 +7,7 @@ import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.mapper.CartMapper;
 import com.example.demo.mapper.OrderMapper;
 import com.example.demo.model.*;
+import com.example.demo.repositories.BasketRepository;
 import com.example.demo.repositories.OrderRepository;
 import com.example.demo.repositories.ProductRepository;
 import com.example.demo.repositories.UserRepository;
@@ -34,6 +35,7 @@ public class OrderService {
     private final EmailService emailService;
     private final OrderMapper orderMapper;
     private final CartMapper cartMapper;
+    private final BasketRepository basketRepository;
 
     @Transactional
     public OrderDTO createOrder(Long userId, String address, String phoneNumber){
@@ -103,4 +105,29 @@ public class OrderService {
         Order updatedOrder = orderRepository.save(order);
         return orderMapper.toDTO(updatedOrder);
     }
+
+    @Transactional
+    public OrderDTO placeOrderFromBasket(Long basketId) {
+        Basket basket = basketRepository.findById(basketId)
+                .orElseThrow(() -> new RuntimeException("Basket not found")); // Handle this exception properly
+
+        // Create a new order
+        Order order = new Order();
+        order.setUser(basket.getUser());
+        order.setItems(basket.getItems().stream()
+                .map(item -> new OrderItem(order, item.getProduct(), item.getQuantity()))
+                .collect(Collectors.toList()));
+        order.setCreatedAt(LocalDateTime.now());
+        order.setStatus(Order.OrderStatus.PREPARING);
+
+        // Save the order
+        Order savedOrder = orderRepository.save(order);
+
+        // Clear the basket
+        basket.getItems().clear();
+        basketRepository.save(basket);
+
+        return orderMapper.toDTO(savedOrder);
+    }
+
 }
