@@ -1,7 +1,8 @@
 # E-commerce API Documentation
 
 ## Overview
-This document describes the endpoints available in the e-commerce application API. The API allows users to manage their accounts, products, orders, carts, comments, and baskets.
+
+This document describes the endpoints available in the e-commerce application API. The API allows users to manage their accounts, products, orders, carts, comments, and baskets. In addition, the basket feature enables multiple users to collaborate by allowing them to share baskets, add products, and update quantities collectively. This feature is designed to facilitate group shopping and streamline the collaborative shopping experience.
 
 ### Base URL
 All endpoints are prefixed with `/api/`.
